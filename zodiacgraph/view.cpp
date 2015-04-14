@@ -19,7 +19,7 @@
 
 namespace zodiac {
 
-QColor View::s_backgroundColor = QColor("#191919");
+QColor View::s_backgroundColor = QColor(Qt::white);
 qreal View::s_zoomSpeed = 0.001;
 Qt::MouseButton View::s_dragMoveButton = Qt::RightButton;
 Qt::MouseButton View::s_selectionButton  = Qt::LeftButton;

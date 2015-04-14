@@ -28,7 +28,7 @@ unix {
     QMAKE_CXX = ccache g++
 }
 
-TARGET = ZodiacGraph_Showcase
+TARGET = Relarank
 TEMPLATE = app
 
 

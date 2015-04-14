@@ -28,13 +28,11 @@ void createZodiacLogo(MainCtrl* mainCtrl);
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle("ZodiacGraph - Showcase Application");
-    setWindowIcon(QIcon(":/icons/zodiac_logo.png"));
 
     // create the main toolbar
     QToolBar* mainToolBar = new QToolBar(this);
     //mainToolBar->setStyleSheet("QToolBar {border: 0px;}");
-    mainToolBar->setIconSize(QSize(12,12));
+    //mainToolBar->setIconSize(QSize(12,12));
     mainToolBar->setMovable(false);
     mainToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     addToolBar(Qt::TopToolBarArea, mainToolBar);
@@ -66,10 +64,6 @@ MainWindow::MainWindow(QWidget *parent)
     mainToolBar->addAction(newNodeAction);
     connect(newNodeAction, SIGNAL(triggered()), m_mainCtrl, SLOT(createDefaultNode()));
 
-    QWidget* emptySpacer = new QWidget();
-    emptySpacer->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
-    mainToolBar->addWidget(emptySpacer);
-
     QAction* aboutAction = new QAction(QIcon(":/icons/questionmark.svg"), tr("&About"), this);
     aboutAction->setStatusTip(tr("Show the about box"));
     mainToolBar->addAction(aboutAction);
@@ -77,10 +71,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     // initialize the GUI
     setCentralWidget(m_mainSplitter);
-    readSettings();
-    zodiacScene->updateStyle();
-    zodiacView->updateStyle();
-
     createZodiacLogo(m_mainCtrl);
 }
 
@@ -88,7 +78,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     if (m_mainCtrl->shutdown()) {
         // if the user accepted, close the application
-        writeSettings();
+        //writeSettings();
         event->accept();
 
     } else {
