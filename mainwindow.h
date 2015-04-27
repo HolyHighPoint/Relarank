@@ -26,7 +26,14 @@
 ///
 
 #include <QMainWindow>
-
+#include <QString>
+#include <QFileDialog>
+#include <QThread>
+#include "graph.h"
+#include "nodectrl.h"
+#include "propertyeditor.h"
+#include "zodiacgraph/scene.h"
+#include "zodiacgraph/view.h"
 class MainCtrl;
 class PropertyEditor;
 class QSplitter;
@@ -36,6 +43,31 @@ class QSplitter;
 ///
 /// It also contains the node Manager that in turn controls the business logic.
 ///
+
+/*class RenderThread : public QThread
+{
+    Q_OBJECT
+
+signals:
+    void notify(int);
+
+public:
+    RenderThread(std::vector<graph_node> &_node,
+                 std::vector<graph_edge> &_edge, std::vector<NodeCtrl*> &_nodectrl,
+                 MainCtrl* &_mainCtrl, QObject *parent = 0)
+        : node(_node), edge(_edge), nodectrl(_nodectrl), mainCtrl(_mainCtrl), QThread(parent)
+    {
+    }
+
+protected:
+    void run();
+private:
+    std::vector<graph_node> &node;
+    std::vector<graph_edge> &edge;
+    std::vector<NodeCtrl*> &nodectrl;
+    MainCtrl* &mainCtrl;
+};*/
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -65,7 +97,10 @@ private slots:
     ///
     void displayAbout();
 
-private: // methods
+public slots:
+    void openfile();
+
+private: // methods 
 
     ///
     /// \brief Reads GUI settings stored by QSettings.
@@ -81,6 +116,17 @@ private: // methods
     /// For details, see readSettings().
     ///
     void writeSettings();
+
+    void printsta(MainCtrl* mainCtrl);
+    void clearsta();
+    std::vector<graph_node> node;
+    std::vector<graph_edge> edge;
+    std::vector<NodeCtrl*> nodectrl;
+    zodiac::Scene* zodiacScene;
+    zodiac::View* zodiacView;
+    PropertyEditor* propertyEditor;
+
+
 
 private: // members
 

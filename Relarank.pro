@@ -20,14 +20,6 @@ QT          += core gui widgets
 CONFIG      += c++11 static
 DEFINES     *= QT_USE_QSTRINGBUILDER
 
-static {
-    QT  += svg
-}
-
-unix {
-    QMAKE_CXX = ccache g++
-}
-
 TARGET = Relarank
 TEMPLATE = app
 
@@ -92,7 +84,10 @@ HEADERS  += mainwindow.h \
     zodiacgraph/straightdoubleedge.h \
     zodiacgraph/straightedge.h \
     zodiacgraph/utils.h \
-    zodiacgraph/view.h
+    zodiacgraph/view.h \
+    graph.h
 
 RESOURCES += \
     res/icons.qrc
+
+RC_FILE = res/Qt_ico.rc
