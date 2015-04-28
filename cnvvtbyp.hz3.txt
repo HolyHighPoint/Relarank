@@ -1,0 +1,21 @@
+﻿Merge branch 'master' of github.com:HolyHighPoint/Relarank
+
+Conflicts:
+	mainwindow.cpp
+	mainwindow.h
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch and 'origin/master' have diverged,
+# and have 1 and 1 different commit each, respectively.
+#   (use "git pull" to merge the remote branch into yours)
+#
+# Changes to be committed:
+#	modified:   mainwindow.cpp
+#	modified:   mainwindow.h
+#
+# Untracked files:
+#	y1jwke3g.0ou.txt
+#
+

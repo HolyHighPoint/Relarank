@@ -51,13 +51,11 @@ MainWindow::MainWindow(QWidget *parent)
     newNodeAction->setStatusTip(tr("Open the file"));
     mainToolBar->addAction(newNodeAction);
     connect(newNodeAction, SIGNAL(triggered()), this, SLOT(openfile()));
-
     QAction* closeAction = new QAction(QIcon(":/icons/outgoing.png"), tr("E&xit"), this);
     closeAction->setStatusTip(tr("Exit"));
     closeAction->setShortcuts(QKeySequence::Close);
     mainToolBar->addAction(closeAction);
     connect(closeAction, SIGNAL(triggered()), this, SLOT(close()));
-
     QAction* aboutAction = new QAction(QIcon(":/icons/questionmark.png"), tr("&About"), this);
     aboutAction->setStatusTip(tr("About this application"));
     mainToolBar->addAction(aboutAction);
@@ -227,8 +225,6 @@ void MainWindow::printsta(MainCtrl* mainCtrl)
         x.connectPlug(y);
     }
 }
-
-
 void createZodiacLogo(MainCtrl* mainCtrl)
 {
     NodeCtrl* nodeCtrl12 = mainCtrl->createNode("Node 12");

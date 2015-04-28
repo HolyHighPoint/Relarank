@@ -28,7 +28,6 @@
 #include <QMainWindow>
 #include <QString>
 #include <QFileDialog>
-#include <QThread>
 #include "graph.h"
 #include "nodectrl.h"
 #include "propertyeditor.h"
@@ -102,6 +101,7 @@ public slots:
 
 private: // methods 
 
+
     ///
     /// \brief Reads GUI settings stored by QSettings.
     ///
@@ -125,7 +125,6 @@ private: // methods
     zodiac::Scene* zodiacScene;
     zodiac::View* zodiacView;
     PropertyEditor* propertyEditor;
-
 
 
 private: // members
