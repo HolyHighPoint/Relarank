@@ -7,19 +7,18 @@
 #include "scene.h"
 #include "scenehandle.h"
 
-namespace relarank {
+namespace relarank
+{
 
-PlugHandle::PlugHandle(Plug* plug)
-    : QObject(nullptr)
-    , m_plug(plug)
-    , m_isValid(plug!=nullptr)
+PlugHandle::PlugHandle(Plug * plug): QObject(nullptr), m_plug(plug),
+    m_isValid(plug != nullptr)
 {
     connectSignals();
 }
 
-PlugHandle& PlugHandle::operator = (const PlugHandle& other)
+PlugHandle & PlugHandle::operator = (const PlugHandle & other)
 {
-    if(m_plug){
+    if (m_plug) {
         m_plug->disconnect(this);
     }
     m_plug = other.data();
@@ -33,7 +32,7 @@ bool PlugHandle::isRemovable() const
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return false;
     }
 #endif
@@ -45,11 +44,11 @@ bool PlugHandle::remove()
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return false;
     }
 #endif
-    if(m_plug->getNode()->removePlug(m_plug)){
+    if (m_plug->getNode()->removePlug(m_plug)) {
         m_isValid = false;
         return true;
     } else {
@@ -62,19 +61,19 @@ QString PlugHandle::getName() const
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return "";
     }
 #endif
     return m_plug->getName();
 }
 
-QString PlugHandle::rename(const QString& name)
+QString PlugHandle::rename(const QString & name)
 {
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return "";
     }
 #endif
@@ -86,7 +85,7 @@ bool PlugHandle::toggleDirection()
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return false;
     }
 #endif
@@ -98,7 +97,7 @@ bool PlugHandle::isIncoming() const
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return false;
     }
 #endif
@@ -110,7 +109,7 @@ bool PlugHandle::isOutgoing() const
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return false;
     }
 #endif
@@ -122,24 +121,24 @@ int PlugHandle::connectionCount() const
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return 0;
     }
 #endif
     return m_plug->getEdgeCount();
 }
 
-QList<PlugHandle> PlugHandle::getConnectedPlugs() const
+QList < PlugHandle > PlugHandle::getConnectedPlugs()const
 {
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
-        return QList<PlugHandle>();
+    if (!m_isValid) {
+        return QList < PlugHandle > ();
     }
 #endif
-    QList<PlugHandle> result;
-    for(Plug* plug : m_plug->getConnectedPlugs()){
+    QList < PlugHandle > result;
+    for (Plug * plug : m_plug->getConnectedPlugs()) {
         result.append(PlugHandle(plug));
     }
     return result;
@@ -150,35 +149,38 @@ bool PlugHandle::connectPlug(PlugHandle other)
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return false;
     }
 #endif
-    if(m_plug->getDirection() == PlugDirection::OUT){
-        return m_plug->getNode()->getScene()->createEdge(m_plug, other.data()) != nullptr;
+    if (m_plug->getDirection() == PlugDirection::OUT) {
+        return m_plug->getNode()->getScene()->createEdge(m_plug,
+                other.data()) !=
+               nullptr;
     } else {
-        return m_plug->getNode()->getScene()->createEdge(other.data(), m_plug) != nullptr;
+        return m_plug->getNode()->getScene()->createEdge(other.data(),
+                m_plug) !=
+               nullptr;
     }
 }
-
 
 bool PlugHandle::disconnectPlug(PlugHandle other)
 {
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid && other.isValid());
 #else
-    if(!m_isValid || !other.isValid()){
+    if (!m_isValid || !other.isValid()) {
         return false;
     }
 #endif
-    PlugEdge* edge;
-    Scene* scene = m_plug->getNode()->getScene();
-    if(m_plug->getDirection() == PlugDirection::OUT){
+    PlugEdge *edge;
+    Scene *scene = m_plug->getNode()->getScene();
+    if (m_plug->getDirection() == PlugDirection::OUT) {
         edge = scene->getEdge(m_plug, other.data());
     } else {
         edge = scene->getEdge(other.data(), m_plug);
     }
-    if(!edge){
+    if (!edge) {
         return false;
     }
     scene->removeEdge(edge);
@@ -190,14 +192,14 @@ void PlugHandle::disconnectAll()
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return;
     }
 #endif
-    Scene* scene = m_plug->getNode()->getScene();
-    for(Plug* plug : m_plug->getConnectedPlugs()){
-        PlugEdge* edge;
-        if(m_plug->getDirection() == PlugDirection::OUT){
+    Scene *scene = m_plug->getNode()->getScene();
+    for (Plug * plug : m_plug->getConnectedPlugs()) {
+        PlugEdge *edge;
+        if (m_plug->getDirection() == PlugDirection::OUT) {
             edge = scene->getEdge(m_plug, plug);
         } else {
             edge = scene->getEdge(plug, m_plug);
@@ -212,7 +214,7 @@ NodeHandle PlugHandle::getNode() const
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return NodeHandle();
     }
 #endif
@@ -224,7 +226,7 @@ SceneHandle PlugHandle::getScene() const
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return SceneHandle();
     }
 #endif
@@ -233,11 +235,12 @@ SceneHandle PlugHandle::getScene() const
 
 void PlugHandle::connectSignals()
 {
-    if(!m_isValid){
+    if (!m_isValid) {
         return;
     }
     connect(m_plug, SIGNAL(destroyed()), this, SLOT(plugWasDestroyed()));
-    connect(m_plug, SIGNAL(plugRenamed(QString)), this, SIGNAL(plugRenamed(QString)));
+    connect(m_plug, SIGNAL(plugRenamed(QString)), this,
+            SIGNAL(plugRenamed(QString)));
 }
 
 void PlugHandle::plugWasDestroyed()
@@ -249,5 +252,4 @@ void PlugHandle::plugWasDestroyed()
     this->disconnect();
 }
 
-} // namespace relarank
-
+}				// namespace relarank

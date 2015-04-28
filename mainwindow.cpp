@@ -29,70 +29,67 @@
 #include "relarankgraph/view.h"
 using namespace std;
 
-void createZodiacLogo(MainCtrl* mainCtrl);
-
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+MainWindow::MainWindow(QWidget * parent): QMainWindow(parent)
 {
     this->resize(1366, 768);
     // create the main toolbar
     //QMenuBar* mainMenuBar = new QMenuBar(this);
-    QToolBar* mainToolBar = new QToolBar("ToolBar", this);
+    QToolBar *
+    mainToolBar = new QToolBar("ToolBar", this);
     //this->setMenuBar(mainMenuBar);
     //mainToolBar->setStyleSheet("QToolBar {border: 0px;}");
     //mainToolBar->setIconSize(QSize(12,12));
     mainToolBar->setMovable(false);
     mainToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     addToolBar(Qt::TopToolBarArea, mainToolBar);
-
     // create global actions
-    QAction* newNodeAction = new QAction(QIcon(":/icons/incoming.png"), tr("&Open"), this);
+    QAction *
+    newNodeAction =
+        new QAction(QIcon(":/icons/incoming.png"), tr("&Open"), this);
     newNodeAction->setShortcuts(QKeySequence::Open);
     newNodeAction->setStatusTip(tr("Open the file"));
     mainToolBar->addAction(newNodeAction);
     connect(newNodeAction, SIGNAL(triggered()), this, SLOT(openfile()));
-    QAction* closeAction = new QAction(QIcon(":/icons/outgoing.png"), tr("E&xit"), this);
+    QAction *
+    closeAction =
+        new QAction(QIcon(":/icons/outgoing.png"), tr("E&xit"), this);
     closeAction->setStatusTip(tr("Exit"));
     closeAction->setShortcuts(QKeySequence::Close);
     mainToolBar->addAction(closeAction);
     connect(closeAction, SIGNAL(triggered()), this, SLOT(close()));
-    QAction* aboutAction = new QAction(QIcon(":/icons/questionmark.png"), tr("&About"), this);
+    QAction *
+    aboutAction =
+        new QAction(QIcon(":/icons/questionmark.png"), tr("&About"), this);
     aboutAction->setStatusTip(tr("About this application"));
     mainToolBar->addAction(aboutAction);
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(displayAbout()));
-
-
     // create the status bar
     statusBar();
-
-    // create the Zodiac graph
+    // create the RelaRank graph
     relarankScene = new relarank::Scene(this);
     relarankView = new relarank::View(this);
     relarankView->setScene(relarankScene);
-
     // create the Property Editor
     propertyEditor = new PropertyEditor(this);
-
     // create the Main Controller
     m_mainCtrl = new MainCtrl(this, relarankScene, propertyEditor);
-
     // setup the main splitter
     m_mainSplitter = new QSplitter(Qt::Horizontal, this);
     m_mainSplitter->addWidget(propertyEditor);
     m_mainSplitter->addWidget(relarankView);
-    m_mainSplitter->setSizes({100, 900});
-
+    m_mainSplitter->setSizes({
+        100, 900
+    });
     // initialize the GUI
     setCentralWidget(m_mainSplitter);
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent * event)
 {
     if (m_mainCtrl->shutdown()) {
         // if the user accepted, close the application
         //writeSettings();
         event->accept();
-
     } else {
         // if the user objected, do nothing
         event->ignore();
@@ -103,53 +100,58 @@ void MainWindow::displayAbout()
 {
     QMessageBox aboutBox;
     aboutBox.setWindowTitle("About the Relarank");
-    aboutBox.setText(
-        "<h3>About this Application</h3>"
-         );
+    aboutBox.setText("<h3>About this Application</h3>");
     aboutBox.exec();
 }
 
 void MainWindow::openfile()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("打开文件"), "",  tr("rel文件(*.rel);;所有文件(*.*)"));
-    if(fileName=="")return;
+    QString fileName =
+        QFileDialog::getOpenFileName(this, tr("打开文件"), "",
+                                     tr("rel文件(*.rel);;所有文件(*.*)"));
+    if (fileName == "")
+        return;
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        QMessageBox::critical(this, tr("错误"), tr("无法打开 %1").arg(fileName));
+        QMessageBox::critical(this, tr("错误"),
+                              tr("无法打开 %1").arg(fileName));
         return;
     }
     int n, m;
     QTextStream in(&file);
-    node.clear();edge.clear();
-    in>>n>>m;
-    qDebug()<<n<<" "<<m<<endl;
-    for(int i=0;i<n;i++){
+    node.clear();
+    edge.clear();
+    in >> n >> m;
+    qDebug() << n << " " << m << endl;
+    for (int i = 0; i < n; i++) {
         QString name;
-        in>>name;
-        qDebug()<<name;
+        in >> name;
+        qDebug() << name;
         node.push_back(graph_node(name));
     }
-    for(int i=0;i<m;i++){
-        int x, y;double w;
-        in>>x>>y>>w;
+    for (int i = 0; i < m; i++) {
+        int x, y;
+        double w;
+        in >> x >> y >> w;
         x--, y--;
-        qDebug()<<x<<" "<<y<<" "<<w;
+        qDebug() << x << " " << y << " " << w;
         edge.push_back(graph_edge(x, y, w));
         node[x].insert(x, y, w);
     }
-    for(int i=0;i<n;i++){
+    for (int i = 0; i < n; i++) {
         node[i].sort();
     }
     clearsta();
     printsta(m_mainCtrl);
     /*RenderThread *thread = new RenderThread(node, edge, nodectrl, m_mainCtrl, this);
-    thread->start();
-    connect(thread, &RenderThread::finished, thread, &RenderThread::deleteLater);*/
+       thread->start();
+       connect(thread, &RenderThread::finished, thread, &RenderThread::deleteLater); */
 }
 
 void MainWindow::clearsta()
 {
-    for(vector<NodeCtrl*>::const_iterator i=nodectrl.begin();i!=nodectrl.end();i++){
+    for (vector < NodeCtrl * >::const_iterator i = nodectrl.begin();
+         i != nodectrl.end(); i++) {
         (*i)->remove();
         delete *i;
     }
@@ -159,7 +161,6 @@ void MainWindow::clearsta()
     delete relarankScene;
     delete propertyEditor;
     delete m_mainSplitter;
-
     relarankScene = new relarank::Scene(this);
     relarankView = new relarank::View(this);
     relarankView->setScene(relarankScene);
@@ -168,38 +169,52 @@ void MainWindow::clearsta()
     m_mainSplitter = new QSplitter(Qt::Horizontal, this);
     m_mainSplitter->addWidget(propertyEditor);
     m_mainSplitter->addWidget(relarankView);
-    m_mainSplitter->setSizes({100, 900});
+    m_mainSplitter->setSizes({
+        100, 900
+    }
+                            );
     setCentralWidget(m_mainSplitter);
 }
 
-void MainWindow::printsta(MainCtrl* mainCtrl)
+void MainWindow::printsta(MainCtrl * mainCtrl)
 {
-    QProgressDialog progress_dialog("    Loading graph file...    ","Cancel",0, node.size()+edge.size(), this);
+    QProgressDialog progress_dialog("    Loading graph file...    ", "Cancel",
+                                    0, node.size() + edge.size(), this);
     progress_dialog.show();
     qApp->processEvents();
     const double PI = 3.1415926535898;
-    const double ang = 2*PI/node.size();
+    const double ang = 2 * PI / node.size();
     const double dis = 500.;
-    const double R = sqrt(dis*dis/2/sin(ang));
-    for(vector<graph_node>::const_iterator i=node.begin();i!=node.end();i++){
-        progress_dialog.setValue(i-node.begin());
+    const double R = sqrt(dis * dis / 2 / sin(ang));
+    for (vector < graph_node >::const_iterator i = node.begin();
+         i != node.end(); i++) {
+        progress_dialog.setValue(i - node.begin());
         nodectrl.push_back(mainCtrl->createNode(i->name));
-        nodectrl.back()->getNodeHandle().setPos(R*cos(ang*(i-node.begin())), R*sin(ang*(i-node.begin())));
+        nodectrl.back()->getNodeHandle().setPos(R *
+                                                cos(ang *
+                                                        (i - node.begin())),
+                                                R * sin(ang *
+                                                        (i -
+                                                                node.begin())));
         qApp->processEvents();
-        if(progress_dialog.wasCanceled()){
+        if (progress_dialog.wasCanceled()) {
             clearsta();
             return;
         }
     }
-    for(vector<graph_edge>::const_iterator i=edge.begin();i!=edge.end();i++){
-        progress_dialog.setValue(node.size()+i-edge.begin());
+    for (vector < graph_edge >::const_iterator i = edge.begin();
+         i != edge.end(); i++) {
+        progress_dialog.setValue(node.size() + i - edge.begin());
         char tmpx[50], tmpy[50];
-        sprintf(tmpy, "%d", i->y);sprintf(tmpx, "%d", i->x);
-        relarank::PlugHandle x = nodectrl[i->x]->addOutgoingPlug("Out:"+QString(tmpy));
-        relarank::PlugHandle y = nodectrl[i->y]->addIncomingPlug("In:"+QString(tmpx));
+        sprintf(tmpy, "%d", i->y);
+        sprintf(tmpx, "%d", i->x);
+        relarank::PlugHandle x =
+            nodectrl[i->x]->addOutgoingPlug("Out:" + QString(tmpy));
+        relarank::PlugHandle y =
+            nodectrl[i->y]->addIncomingPlug("In:" + QString(tmpx));
         x.connectPlug(y);
         qApp->processEvents();
-        if(progress_dialog.wasCanceled()){
+        if (progress_dialog.wasCanceled()) {
             clearsta();
             return;
         }
@@ -225,7 +240,7 @@ void MainWindow::printsta(MainCtrl* mainCtrl)
         x.connectPlug(y);
     }
 }
-void createZodiacLogo(MainCtrl* mainCtrl)
+void createRelaRankLogo(MainCtrl* mainCtrl)
 {
     NodeCtrl* nodeCtrl12 = mainCtrl->createNode("Node 12");
     nodeCtrl12->getNodeHandle().setPos(-1360.86, 265.708);

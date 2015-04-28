@@ -3,19 +3,18 @@
 #include "node.h"
 #include "scene.h"
 
-namespace relarank {
+namespace relarank
+{
 
-SceneHandle::SceneHandle(Scene* scene)
-    : QObject(nullptr)
-    , m_scene(scene)
-    , m_isValid(scene!=nullptr)
+SceneHandle::SceneHandle(Scene * scene): QObject(nullptr), m_scene(scene),
+    m_isValid(scene != nullptr)
 {
     connectSignals();
 }
 
-SceneHandle& SceneHandle::operator = (const SceneHandle& other)
+SceneHandle & SceneHandle::operator = (const SceneHandle & other)
 {
-    if(m_scene){
+    if (m_scene) {
         m_scene->disconnect(this);
     }
     m_scene = other.data();
@@ -24,31 +23,32 @@ SceneHandle& SceneHandle::operator = (const SceneHandle& other)
     return *this;
 }
 
-NodeHandle SceneHandle::createNode(const QString& name, const QUuid& uuid)
+NodeHandle SceneHandle::createNode(const QString & name,
+                                   const QUuid & uuid)
 {
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return NodeHandle();
     }
 #endif
     return NodeHandle(m_scene->createNode(name, uuid));
 }
 
-QList<NodeHandle> SceneHandle::getNodes() const
+QList < NodeHandle > SceneHandle::getNodes()const
 {
-    QList<NodeHandle> result;
+    QList < NodeHandle > result;
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return result;
     }
 #endif
-    QList<Node*> nodes = m_scene->getNodes();
+    QList < Node * >nodes = m_scene->getNodes();
     result.reserve(nodes.size());
-    for(Node* node : nodes){
+    for (Node * node : nodes) {
         result.append(NodeHandle(node));
     }
     return result;
@@ -59,30 +59,33 @@ void SceneHandle::deselectAll() const
 #ifdef QT_DEBUG
     Q_ASSERT(m_isValid);
 #else
-    if(!m_isValid){
+    if (!m_isValid) {
         return;
     }
 #endif
-    for(QGraphicsItem* item : m_scene->selectedItems()){
+    for (QGraphicsItem * item : m_scene->selectedItems()) {
         item->setSelected(false);
     }
 }
 
 void SceneHandle::connectSignals()
 {
-    if(!m_isValid){
+    if (!m_isValid) {
         return;
     }
-    connect(m_scene, SIGNAL(destroyed()), this, SLOT(sceneWasDestroyed()));
-    connect(m_scene, SIGNAL(selectionChanged()), this, SLOT(updateSelection()));
+    connect(m_scene, SIGNAL(destroyed()), this,
+            SLOT(sceneWasDestroyed()));
+    connect(m_scene, SIGNAL(selectionChanged()), this,
+            SLOT(updateSelection()));
 }
 
 void SceneHandle::updateSelection()
 {
-    QList<NodeHandle> selection;
-    for(QGraphicsItem* item : m_scene->selectedItems()){
-        Node* selectedNode = qobject_cast<Node*>(item->toGraphicsObject());
-        if(selectedNode){
+    QList < NodeHandle > selection;
+    for (QGraphicsItem * item : m_scene->selectedItems()) {
+        Node *selectedNode =
+            qobject_cast < Node * >(item->toGraphicsObject());
+        if (selectedNode) {
             selection.append(NodeHandle(selectedNode));
         }
     }
@@ -94,4 +97,4 @@ void SceneHandle::sceneWasDestroyed()
     m_isValid = false;
 }
 
-} // namespace relarank
+}				// namespace relarank
