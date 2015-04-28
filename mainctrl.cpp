@@ -5,21 +5,21 @@
 
 #include "nodectrl.h"
 #include "propertyeditor.h"
-#include "zodiacgraph/nodehandle.h"
+#include "relarankgraph/nodehandle.h"
 
 QString MainCtrl::s_defaultName = "Node ";
 
-MainCtrl::MainCtrl(QObject *parent, zodiac::Scene* scene, PropertyEditor* propertyEditor)
+MainCtrl::MainCtrl(QObject *parent, relarank::Scene* scene, PropertyEditor* propertyEditor)
     : QObject(parent)
-    , m_scene(zodiac::SceneHandle(scene))
+    , m_scene(relarank::SceneHandle(scene))
     , m_propertyEditor(propertyEditor)
-    , m_nodes(QHash<zodiac::NodeHandle, NodeCtrl*>())
+    , m_nodes(QHash<relarank::NodeHandle, NodeCtrl*>())
     , m_nodeIndex(1)            // name suffixes start at 1
 {
     m_propertyEditor->setMainCtrl(this);
 
-    connect(&m_scene, SIGNAL(selectionChanged(QList<zodiac::NodeHandle>)),
-            this, SLOT(selectionChanged(QList<zodiac::NodeHandle>)));
+    connect(&m_scene, SIGNAL(selectionChanged(QList<relarank::NodeHandle>)),
+            this, SLOT(selectionChanged(QList<relarank::NodeHandle>)));
 }
 
 NodeCtrl* MainCtrl::createNode(const QString& name)
@@ -57,7 +57,7 @@ bool MainCtrl::deleteNode(NodeCtrl* node)
 
     // disconnect and delete the node
     node->disconnect();
-    zodiac::NodeHandle handle = node->getNodeHandle();
+    relarank::NodeHandle handle = node->getNodeHandle();
     m_nodes.remove(handle);
     bool result = handle.remove();
     Q_ASSERT(result);
@@ -66,8 +66,8 @@ bool MainCtrl::deleteNode(NodeCtrl* node)
 
 void MainCtrl::printZodiacScene()
 {
-    QList<zodiac::NodeHandle> allNodes = m_nodes.keys();
-    for(zodiac::NodeHandle node : allNodes){
+    QList<relarank::NodeHandle> allNodes = m_nodes.keys();
+    for(relarank::NodeHandle node : allNodes){
         int number = node.getName().right(2).trimmed().toInt();
         QString nodeCtrl = "nodeCtrl" + QString::number(number);
         QPointF pos = node.getPos();
@@ -75,7 +75,7 @@ void MainCtrl::printZodiacScene()
         qDebug() << "NodeCtrl* nodeCtrl" + QString::number(number) + " = mainCtrl->createNode(\"" + node.getName() + "\");";
         qDebug() << nodeCtrl + "->getNodeHandle().setPos(" + QString::number(pos.x()) + ", " + QString::number(pos.y()) + ");";
 
-        for(zodiac::PlugHandle plug : node.getPlugs()){
+        for(relarank::PlugHandle plug : node.getPlugs()){
             if(plug.isIncoming()){
                 qDebug() << nodeCtrl + "->addIncomingPlug(\"" + plug.getName() + "\");";
             } else {
@@ -86,12 +86,12 @@ void MainCtrl::printZodiacScene()
         qDebug() << ""; // newline
     }
 
-    for(zodiac::NodeHandle node : allNodes){
+    for(relarank::NodeHandle node : allNodes){
         int number = node.getName().right(2).trimmed().toInt();
         QString nodeCtrl = "nodeCtrl" + QString::number(number);
-        for(zodiac::PlugHandle plug : node.getPlugs()){
+        for(relarank::PlugHandle plug : node.getPlugs()){
             if(plug.isIncoming()) continue;
-            for(zodiac::PlugHandle otherPlug : plug.getConnectedPlugs()){
+            for(relarank::PlugHandle otherPlug : plug.getConnectedPlugs()){
                 int otherNumber = otherPlug.getNode().getName().right(2).trimmed().toInt();
                 QString otherNodeCtrl = "nodeCtrl" + QString::number(otherNumber);
                 qDebug() << nodeCtrl + "->getNodeHandle().getPlug(\"" + plug.getName() + "\").connectPlug(" + otherNodeCtrl + "->getNodeHandle().getPlug(\"" + otherPlug.getName() + "\"));";
@@ -125,7 +125,7 @@ void MainCtrl::createDefaultNode()
     newNode->setSelected(true);
 }
 
-void MainCtrl::selectionChanged(QList<zodiac::NodeHandle> selection)
+void MainCtrl::selectionChanged(QList<relarank::NodeHandle> selection)
 {
     m_propertyEditor->showNodes(selection);
 }

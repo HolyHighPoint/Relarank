@@ -22,8 +22,8 @@
 #include <QObject>
 #include <QHash>
 
-#include "zodiacgraph/nodehandle.h"
-#include "zodiacgraph/plughandle.h"
+#include "relarankgraph/nodehandle.h"
+#include "relarankgraph/plughandle.h"
 
 class MainCtrl;
 
@@ -40,9 +40,9 @@ public: // methods
     /// \brief Constructor.
     ///
     /// \param [in] manager Manager for all NodeCtrls.
-    /// \param [in] node    Handle for the zodiac::Node of this logical node.
+    /// \param [in] node    Handle for the relarank::Node of this logical node.
     ///
-    explicit NodeCtrl(MainCtrl* manager, zodiac::NodeHandle node);
+    explicit NodeCtrl(MainCtrl* manager, relarank::NodeHandle node);
 
     ///
     /// \brief Returns the name of the controlled node.
@@ -59,18 +59,18 @@ public: // methods
     void rename(const QString& name);
 
     ///
-    /// \brief Direct access to the zodiac::NodeHandle of this NodeCtrl.
+    /// \brief Direct access to the relarank::NodeHandle of this NodeCtrl.
     ///
-    /// \return The managed zodiac::NodeHandle.
+    /// \return The managed relarank::NodeHandle.
     ///
-    inline zodiac::NodeHandle getNodeHandle() const {return m_node;}
+    inline relarank::NodeHandle getNodeHandle() const {return m_node;}
 
     ///
-    /// \brief Returns a list of PlugHandle%s to all zodiac::Plug%s of the managed Node.
+    /// \brief Returns a list of PlugHandle%s to all relarank::Plug%s of the managed Node.
     ///
-    /// \return Handles to all zodiac::Plug%s of the managed Node.
+    /// \return Handles to all relarank::Plug%s of the managed Node.
     ///
-    inline QList<zodiac::PlugHandle> getPlugHandles() const {return m_node.getPlugs();}
+    inline QList<relarank::PlugHandle> getPlugHandles() const {return m_node.getPlugs();}
 
     ///
     /// \brief Only nodes with no connections can be removed.
@@ -86,7 +86,7 @@ public: // methods
     ///
     /// \return                 Handle of the created Plug.
     ///
-    inline zodiac::PlugHandle addIncomingPlug(const QString& name) {return addPlug(name, true);}
+    inline relarank::PlugHandle addIncomingPlug(const QString& name) {return addPlug(name, true);}
 
     ///
     /// \brief Add a new outgoing plug to the logical node and its representations.
@@ -95,7 +95,7 @@ public: // methods
     ///
     /// \return                 Handle of the created Plug.
     ///
-    inline zodiac::PlugHandle addOutgoingPlug(const QString& name)  {return addPlug(name, false);}
+    inline relarank::PlugHandle addOutgoingPlug(const QString& name)  {return addPlug(name, false);}
 
     ///
     /// \brief Renames an existing plug of this logical node.
@@ -157,7 +157,7 @@ private: // methods
     ///
     /// \return                 Handle of the created Plug.
     ///
-    zodiac::PlugHandle addPlug(const QString& name, bool incoming);
+    relarank::PlugHandle addPlug(const QString& name, bool incoming);
 
 private slots:
 
@@ -168,7 +168,7 @@ private slots:
     /// \param [out] myInput        The input plug of the managed Node.
     /// \param [out] otherOutput    The output plug of the source Node.
     ///
-    void inputConnected(zodiac::PlugHandle myInput, zodiac::PlugHandle otherOutput);
+    void inputConnected(relarank::PlugHandle myInput, relarank::PlugHandle otherOutput);
 
     ///
     /// \brief Is emitted, when an outgoing plug of the managed Node has been connected to an incoming plug of another
@@ -177,7 +177,7 @@ private slots:
     /// \param [out] myOutput   The output plug of the managed Node.
     /// \param [out] otherInput The input plug of the target Node.
     ///
-    void outputConnected(zodiac::PlugHandle myOutput, zodiac::PlugHandle otherInput);
+    void outputConnected(relarank::PlugHandle myOutput, relarank::PlugHandle otherInput);
 
     ///
     /// \brief Is emitted, when a connection from an incoming plug of the managed Node was removed.
@@ -185,7 +185,7 @@ private slots:
     /// \param [out] myInput        The input plug of the managed Node.
     /// \param [out] otherOutput    The output plug of the source Node.
     ///
-    void inputDisconnected(zodiac::PlugHandle myInput, zodiac::PlugHandle otherOutput);
+    void inputDisconnected(relarank::PlugHandle myInput, relarank::PlugHandle otherOutput);
 
     ///
     /// \brief Is emitted, when a connection from an outgoing plug of the managed Node was removed.
@@ -193,7 +193,7 @@ private slots:
     /// \param [out] myOutput   The output plug of the managed Node.
     /// \param [out] otherInput The input plug of the target Node.
     ///
-    void outputDisconnected(zodiac::PlugHandle myOutput, zodiac::PlugHandle otherInput);
+    void outputDisconnected(relarank::PlugHandle myOutput, relarank::PlugHandle otherInput);
 
 private: // members
 
@@ -203,16 +203,16 @@ private: // members
     MainCtrl* m_manager;
 
     ///
-    /// \brief Handle to a zodiac::Node.
+    /// \brief Handle to a relarank::Node.
     ///
-    zodiac::NodeHandle m_node;
+    relarank::NodeHandle m_node;
 
     ///
-    /// \brief All Plug%s of the zodiac::Node managed by this logical node.
+    /// \brief All Plug%s of the relarank::Node managed by this logical node.
     ///
     /// The value of the hash is a list of all connected plugs, so they can update when a plug is renamed.
     ///
-    QHash<zodiac::PlugHandle, QList<zodiac::PlugHandle>> m_plugs;
+    QHash<relarank::PlugHandle, QList<relarank::PlugHandle>> m_plugs;
 };
 
 #endif // NODECTRL_H

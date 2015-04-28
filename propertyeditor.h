@@ -22,7 +22,7 @@
 #include <QScrollArea>
 #include <QHash>
 
-#include "zodiacgraph/nodehandle.h"
+#include "relarankgraph/nodehandle.h"
 
 class Collapsible;
 class MainCtrl;
@@ -56,7 +56,7 @@ public: // methods
     ///
     /// \param [in] selection   Handles of all nodes for which to display NodeProperty%s.
     ///
-    void showNodes(const QList<zodiac::NodeHandle>& selection);
+    void showNodes(const QList<relarank::NodeHandle>& selection);
 
 private: // members
 
@@ -73,7 +73,7 @@ private: // members
     ///
     /// \brief All Collapsible%s representing NodeCtrl%s, identified by their NodeHandle.
     ///
-    QHash<zodiac::NodeHandle, Collapsible*> m_nodes;
+    QHash<relarank::NodeHandle, Collapsible*> m_nodes;
 };
 
 #endif // NODEPROPERTYEDITOR_H

@@ -47,7 +47,7 @@ NodeProperties::NodeProperties(NodeCtrl *node, Collapsible *parent)
     connect(m_addPlugButton, SIGNAL(pressed()), this, SLOT(createNewPlug()));
 
     // define the plugs
-    for(zodiac::PlugHandle& plug : m_node->getPlugHandles()){
+    for(relarank::PlugHandle& plug : m_node->getPlugHandles()){
         addPlugRow(plug);
     }
     mainLayout->addLayout(m_plugLayout);
@@ -65,7 +65,7 @@ void NodeProperties::renameNode()
 
 void NodeProperties::createNewPlug()
 {
-    // duplicate plug names are automatically resolved by the zodiac::Node
+    // duplicate plug names are automatically resolved by the relarank::Node
     if(m_nextPlugIsIncoming){
         addPlugRow(m_node->addIncomingPlug(s_defaultPlugName));
     } else {
@@ -74,7 +74,7 @@ void NodeProperties::createNewPlug()
     m_nextPlugIsIncoming = !m_nextPlugIsIncoming;
 }
 
-void NodeProperties::addPlugRow(zodiac::PlugHandle plug)
+void NodeProperties::addPlugRow(relarank::PlugHandle plug)
 {
     int row = m_plugLayout->rowCount();
 
@@ -104,7 +104,7 @@ void NodeProperties::removePlugRow(const QString& plugName)
 }
 
 
-PlugRow::PlugRow(NodeProperties* editor, zodiac::PlugHandle plug,
+PlugRow::PlugRow(NodeProperties* editor, relarank::PlugHandle plug,
                  QLineEdit* nameEdit, QPushButton* directionToggle, QPushButton* removalButton)
     : QObject(editor)
     , m_editor(editor)

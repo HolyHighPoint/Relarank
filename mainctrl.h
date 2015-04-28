@@ -22,12 +22,12 @@
 #include <QObject>
 #include <QHash>
 
-#include "zodiacgraph/nodehandle.h"
-#include "zodiacgraph/scenehandle.h"
+#include "relarankgraph/nodehandle.h"
+#include "relarankgraph/scenehandle.h"
 
 class NodeCtrl;
 class PropertyEditor;
-namespace zodiac {
+namespace relarank {
     class Scene;
 }
 
@@ -46,10 +46,10 @@ public: // methods
     /// \brief Constructor.
     ///
     /// \param [in] parent          Qt parent.
-    /// \param [in] scene           Handle of a zodiac::Scene.
+    /// \param [in] scene           Handle of a relarank::Scene.
     /// \param [in] propertyEditor  Property editor.
     ///
-    explicit MainCtrl(QObject *parent, zodiac::Scene* scene, PropertyEditor* propertyEditor);
+    explicit MainCtrl(QObject *parent, relarank::Scene* scene, PropertyEditor* propertyEditor);
 
     ///
     /// \brief Creates a new node in the graph.
@@ -78,10 +78,10 @@ public: // methods
     ///
     /// \return             Corresponding NodeCtrl or the <i>nullptr</i> if none was found.
     ///
-    inline NodeCtrl* getCtrlForHandle(zodiac::NodeHandle handle) const { return m_nodes.value(handle, nullptr); }
+    inline NodeCtrl* getCtrlForHandle(relarank::NodeHandle handle) const { return m_nodes.value(handle, nullptr); }
 
     ///
-    /// \brief Prints the current state of the zodiac::Scene.
+    /// \brief Prints the current state of the relarank::Scene.
     ///
     /// This is not a serialized form, even though it might in the future extend to be used in such a fashion.
     /// For now, it is used for helping me creating the initial "ZODIAC"-logo setup.
@@ -109,14 +109,14 @@ private slots:
     ///
     /// \param [in] selection   Handles to all selected nodes.
     ///
-    void selectionChanged(QList<zodiac::NodeHandle> selection);
+    void selectionChanged(QList<relarank::NodeHandle> selection);
 
 private: // members
 
     ///
-    /// \brief Handle to the zodiac::Scene representing the graph.
+    /// \brief Handle to the relarank::Scene representing the graph.
     ///
-    zodiac::SceneHandle m_scene;
+    relarank::SceneHandle m_scene;
 
     ///
     /// \brief The Property Editor widget.
@@ -126,7 +126,7 @@ private: // members
     ///
     /// \brief NodeCtrls managed by this manager (but deleted through Qt).
     ///
-    QHash<zodiac::NodeHandle, NodeCtrl*> m_nodes;
+    QHash<relarank::NodeHandle, NodeCtrl*> m_nodes;
 
     ///
     /// \brief Ever increasing index value for default names of the nodes in this manager.

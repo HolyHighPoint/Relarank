@@ -22,8 +22,8 @@
 #include <QHash>
 #include <QWidget>
 
-#include "zodiacgraph/nodehandle.h"
-#include "zodiacgraph/plughandle.h"
+#include "relarankgraph/nodehandle.h"
+#include "relarankgraph/plughandle.h"
 
 class QGridLayout;
 class QLineEdit;
@@ -93,7 +93,7 @@ private slots:
     ///
     /// \brief Creates a new entry in the plug list of this property editor alongside its PlugRow.
     ///
-    void addPlugRow(zodiac::PlugHandle plug);
+    void addPlugRow(relarank::PlugHandle plug);
 
 private: // members
 
@@ -157,7 +157,7 @@ public: // methods
     /// \param [in] directionToggle Plug-direction toggle button.
     /// \param [in] removalButton   Plug-removal button.
     ///
-    PlugRow(NodeProperties *editor, zodiac::PlugHandle plug,
+    PlugRow(NodeProperties *editor, relarank::PlugHandle plug,
             QLineEdit *nameEdit, QPushButton *directionToggle, QPushButton *removalButton);
 
 private slots:
@@ -194,7 +194,7 @@ private: // members
     ///
     /// \brief Handle of the plug whose name to edit / display.
     ///
-    zodiac::PlugHandle m_plug;
+    relarank::PlugHandle m_plug;
 
     ///
     /// \brief Plug name edit.

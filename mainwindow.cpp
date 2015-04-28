@@ -17,16 +17,16 @@
 #include "nodectrl.h"
 #include "mainctrl.h"
 #include "propertyeditor.h"
-#include "zodiacgraph/baseedge.h"
-#include "zodiacgraph/edgearrow.h"
-#include "zodiacgraph/edgelabel.h"
-#include "zodiacgraph/node.h"
-#include "zodiacgraph/nodelabel.h"
-#include "zodiacgraph/perimeter.h"
-#include "zodiacgraph/plug.h"
-#include "zodiacgraph/pluglabel.h"
-#include "zodiacgraph/scene.h"
-#include "zodiacgraph/view.h"
+#include "relarankgraph/baseedge.h"
+#include "relarankgraph/edgearrow.h"
+#include "relarankgraph/edgelabel.h"
+#include "relarankgraph/node.h"
+#include "relarankgraph/nodelabel.h"
+#include "relarankgraph/perimeter.h"
+#include "relarankgraph/plug.h"
+#include "relarankgraph/pluglabel.h"
+#include "relarankgraph/scene.h"
+#include "relarankgraph/view.h"
 using namespace std;
 
 void createZodiacLogo(MainCtrl* mainCtrl);
@@ -66,20 +66,20 @@ MainWindow::MainWindow(QWidget *parent)
     statusBar();
 
     // create the Zodiac graph
-    zodiacScene = new zodiac::Scene(this);
-    zodiacView = new zodiac::View(this);
-    zodiacView->setScene(zodiacScene);
+    relarankScene = new relarank::Scene(this);
+    relarankView = new relarank::View(this);
+    relarankView->setScene(relarankScene);
 
     // create the Property Editor
     propertyEditor = new PropertyEditor(this);
 
     // create the Main Controller
-    m_mainCtrl = new MainCtrl(this, zodiacScene, propertyEditor);
+    m_mainCtrl = new MainCtrl(this, relarankScene, propertyEditor);
 
     // setup the main splitter
     m_mainSplitter = new QSplitter(Qt::Horizontal, this);
     m_mainSplitter->addWidget(propertyEditor);
-    m_mainSplitter->addWidget(zodiacView);
+    m_mainSplitter->addWidget(relarankView);
     m_mainSplitter->setSizes({100, 900});
 
     // initialize the GUI
@@ -155,19 +155,19 @@ void MainWindow::clearsta()
     }
     nodectrl.clear();
     delete m_mainCtrl;
-    delete zodiacView;
-    delete zodiacScene;
+    delete relarankView;
+    delete relarankScene;
     delete propertyEditor;
     delete m_mainSplitter;
 
-    zodiacScene = new zodiac::Scene(this);
-    zodiacView = new zodiac::View(this);
-    zodiacView->setScene(zodiacScene);
+    relarankScene = new relarank::Scene(this);
+    relarankView = new relarank::View(this);
+    relarankView->setScene(relarankScene);
     propertyEditor = new PropertyEditor(this);
-    m_mainCtrl = new MainCtrl(this, zodiacScene, propertyEditor);
+    m_mainCtrl = new MainCtrl(this, relarankScene, propertyEditor);
     m_mainSplitter = new QSplitter(Qt::Horizontal, this);
     m_mainSplitter->addWidget(propertyEditor);
-    m_mainSplitter->addWidget(zodiacView);
+    m_mainSplitter->addWidget(relarankView);
     m_mainSplitter->setSizes({100, 900});
     setCentralWidget(m_mainSplitter);
 }
@@ -195,8 +195,8 @@ void MainWindow::printsta(MainCtrl* mainCtrl)
         progress_dialog.setValue(node.size()+i-edge.begin());
         char tmpx[50], tmpy[50];
         sprintf(tmpy, "%d", i->y);sprintf(tmpx, "%d", i->x);
-        zodiac::PlugHandle x = nodectrl[i->x]->addOutgoingPlug("Out:"+QString(tmpy));
-        zodiac::PlugHandle y = nodectrl[i->y]->addIncomingPlug("In:"+QString(tmpx));
+        relarank::PlugHandle x = nodectrl[i->x]->addOutgoingPlug("Out:"+QString(tmpy));
+        relarank::PlugHandle y = nodectrl[i->y]->addIncomingPlug("In:"+QString(tmpx));
         x.connectPlug(y);
         qApp->processEvents();
         if(progress_dialog.wasCanceled()){
@@ -220,8 +220,8 @@ void MainWindow::printsta(MainCtrl* mainCtrl)
     for(vector<graph_edge>::const_iterator i=edge.begin();i!=edge.end();i++){
         char tmpx[50], tmpy[50];
         sprintf(tmpy, "%d", i->y);sprintf(tmpx, "%d", i->x);
-        zodiac::PlugHandle x = nodectrl[i->x]->addOutgoingPlug("Out:"+QString(tmpy));
-        zodiac::PlugHandle y = nodectrl[i->y]->addIncomingPlug("In:"+QString(tmpx));
+        relarank::PlugHandle x = nodectrl[i->x]->addOutgoingPlug("Out:"+QString(tmpy));
+        relarank::PlugHandle y = nodectrl[i->y]->addIncomingPlug("In:"+QString(tmpx));
         x.connectPlug(y);
     }
 }

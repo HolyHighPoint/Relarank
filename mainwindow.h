@@ -31,8 +31,8 @@
 #include "graph.h"
 #include "nodectrl.h"
 #include "propertyeditor.h"
-#include "zodiacgraph/scene.h"
-#include "zodiacgraph/view.h"
+#include "relarankgraph/scene.h"
+#include "relarankgraph/view.h"
 class MainCtrl;
 class PropertyEditor;
 class QSplitter;
@@ -122,8 +122,8 @@ private: // methods
     std::vector<graph_node> node;
     std::vector<graph_edge> edge;
     std::vector<NodeCtrl*> nodectrl;
-    zodiac::Scene* zodiacScene;
-    zodiac::View* zodiacView;
+    relarank::Scene* relarankScene;
+    relarank::View* relarankView;
     PropertyEditor* propertyEditor;
 
 

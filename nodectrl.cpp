@@ -2,9 +2,9 @@
 
 #include "mainctrl.h"
 
-typedef zodiac::PlugHandle PlugHandle;
+typedef relarank::PlugHandle PlugHandle;
 
-NodeCtrl::NodeCtrl(MainCtrl* manager,  zodiac::NodeHandle node)
+NodeCtrl::NodeCtrl(MainCtrl* manager,  relarank::NodeHandle node)
     : QObject(manager)
     , m_manager(manager)
     , m_node(node)
@@ -12,14 +12,14 @@ NodeCtrl::NodeCtrl(MainCtrl* manager,  zodiac::NodeHandle node)
 {
     // connect node signals
     connect(&m_node, SIGNAL(removalRequested()), this, SLOT(remove()));
-    connect(&m_node, SIGNAL(inputConnected(zodiac::PlugHandle, zodiac::PlugHandle)),
-            this, SLOT(inputConnected(zodiac::PlugHandle, zodiac::PlugHandle)));
-    connect(&m_node, SIGNAL(outputConnected(zodiac::PlugHandle, zodiac::PlugHandle)),
-            this, SLOT(outputConnected(zodiac::PlugHandle, zodiac::PlugHandle)));
-    connect(&m_node, SIGNAL(inputDisconnected(zodiac::PlugHandle, zodiac::PlugHandle)),
-            this, SLOT(inputDisconnected(zodiac::PlugHandle, zodiac::PlugHandle)));
-    connect(&m_node, SIGNAL(outputDisconnected(zodiac::PlugHandle, zodiac::PlugHandle)),
-            this, SLOT(outputDisconnected(zodiac::PlugHandle, zodiac::PlugHandle)));
+    connect(&m_node, SIGNAL(inputConnected(relarank::PlugHandle, relarank::PlugHandle)),
+            this, SLOT(inputConnected(relarank::PlugHandle, relarank::PlugHandle)));
+    connect(&m_node, SIGNAL(outputConnected(relarank::PlugHandle, relarank::PlugHandle)),
+            this, SLOT(outputConnected(relarank::PlugHandle, relarank::PlugHandle)));
+    connect(&m_node, SIGNAL(inputDisconnected(relarank::PlugHandle, relarank::PlugHandle)),
+            this, SLOT(inputDisconnected(relarank::PlugHandle, relarank::PlugHandle)));
+    connect(&m_node, SIGNAL(outputDisconnected(relarank::PlugHandle, relarank::PlugHandle)),
+            this, SLOT(outputDisconnected(relarank::PlugHandle, relarank::PlugHandle)));
 }
 
 void NodeCtrl::rename(const QString& name)
@@ -108,7 +108,7 @@ bool NodeCtrl::remove()
     return m_manager->deleteNode(this);
 }
 
-zodiac::PlugHandle NodeCtrl::addPlug(const QString& name, bool incoming)
+relarank::PlugHandle NodeCtrl::addPlug(const QString& name, bool incoming)
 {
     PlugHandle newPlug;
     if(incoming){
