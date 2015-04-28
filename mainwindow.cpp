@@ -10,6 +10,7 @@
 #include <QToolBar>
 #include <QDebug>
 #include <QMenuBar>
+#include <QTime>
 #include <QProgressDialog>
 #include <cmath>
 #include <cstring>
@@ -178,32 +179,67 @@ void MainWindow::clearsta()
 
 void MainWindow::printsta(MainCtrl * mainCtrl)
 {
-    QProgressDialog progress_dialog("    Loading graph file...    ", "Cancel",
-                                    0, node.size() + edge.size(), this);
+    QProgressDialog progress_dialog("    Loading graph file...    ", "Cancel", 0, node.size() + edge.size(), this);
     progress_dialog.show();
     qApp->processEvents();
     const double PI = 3.1415926535898;
+    const double dis = 200.;
     const double ang = 2 * PI / node.size();
-    const double dis = 500.;
-    const double R = sqrt(dis * dis / 2 / sin(ang));
-    for (vector < graph_node >::const_iterator i = node.begin();
-         i != node.end(); i++) {
+    const double R = sqrt(dis*dis/2/(1-cos(ang)));
+/*
+    int *d = new int[node.size()+1], h=0, t=1;d[t]=0;
+    int *f = new int[node.size()+1];
+    vector<vector<int> >sta;sta.clear();
+    for(int i=0;i<=(int)node.size();i++)f[i]=0;
+    for(int i=0;i<(int)node.size();i++)if(!f[i]){
+        f[i]=1;
+        if(sta.empty())sta.push_back(vector<int>());
+        sta[0].push_back(i);
+        while(h != t){
+            h++;
+            for (vector < graph_edge >::const_iterator i = node[d[h]].edge.begin(); i != node[d[h]].edge.end(); i++) {
+                int y = !f[i->x]?i->x:i->y, x=(f[i->x] == y)?i->y:i->x;
+                if(!f[y]){
+                    if((int)sta.size() <= f[x])sta.push_back(vector<int>());
+                    sta[f[x]].push_back(y);
+                    f[y]=f[x]+1;
+                    d[++t]=y;
+                }
+            }
+        }
+    }
+    delete [] d;
+    delete [] f;
+    double R = dis;
+    qsrand(QTime().secsTo(QTime::currentTime()));
+    for(vector<vector<int> >::iterator i = sta.begin();i != sta.end(); i++){
+        const double ang = 2 * PI / i->size();
+        const double angtr = double(qrand()%10000)/20000.0*PI;
+        R = max(R+dis, (abs(sin(ang))>1e-3)?sqrt(dis*dis/2/sin(ang)):0);
+        for(vector<int>::iterator j = i->begin();j!= i->end();j++){
+            progress_dialog.setValue(progress_dialog.value()+1);
+            nodectrl.push_back(mainCtrl->createNode(node[*j].name));
+
+            nodectrl.back()->getNodeHandle().setPos(R *cos(ang * (j - i->begin())+angtr), R * sin(ang * (j - i->begin()))+angtr);
+            qApp->processEvents();
+            if (progress_dialog.wasCanceled()) {
+                clearsta();
+                return;
+            }
+        }
+    }
+*/
+    for (vector < graph_node >::const_iterator i = node.begin(); i != node.end(); i++) {
         progress_dialog.setValue(i - node.begin());
         nodectrl.push_back(mainCtrl->createNode(i->name));
-        nodectrl.back()->getNodeHandle().setPos(R *
-                                                cos(ang *
-                                                        (i - node.begin())),
-                                                R * sin(ang *
-                                                        (i -
-                                                                node.begin())));
+        nodectrl.back()->getNodeHandle().setPos(R *cos(ang * (i - node.begin())), R * sin(ang * (i - node.begin())));
         qApp->processEvents();
         if (progress_dialog.wasCanceled()) {
             clearsta();
             return;
         }
     }
-    for (vector < graph_edge >::const_iterator i = edge.begin();
-         i != edge.end(); i++) {
+    for (vector < graph_edge >::const_iterator i = edge.begin(); i != edge.end(); i++) {
         progress_dialog.setValue(node.size() + i - edge.begin());
         char tmpx[50], tmpy[50];
         sprintf(tmpy, "%d", i->y);

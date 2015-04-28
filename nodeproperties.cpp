@@ -39,7 +39,7 @@ NodeProperties::NodeProperties(NodeCtrl * node, Collapsible * parent): QWidget(p
     m_plugLayout->setColumnStretch(1, 1);	// so the add-plug button always stays on the far right
     m_addPlugButton = new QPushButton(this);
     m_addPlugButton->setIconSize(QSize(8, 8));
-    m_addPlugButton->setIcon(QIcon(":/icons/plus.svg"));
+    m_addPlugButton->setIcon(QIcon(":/icons/plus.png"));
     m_addPlugButton->setFlat(true);
     m_plugLayout->addWidget(new QLabel("Plugs", this), 0, 0, 1, 2,
                             Qt::AlignLeft);
@@ -87,7 +87,7 @@ void NodeProperties::addPlugRow(relarank::PlugHandle plug)
     QLineEdit *plugNameEdit = new QLineEdit(plug.getName(), this);
     m_plugLayout->addWidget(plugNameEdit, row, 1);
     QPushButton *removalButton = new QPushButton(this);
-    removalButton->setIcon(QIcon(":/icons/minus.svg"));
+    removalButton->setIcon(QIcon(":/icons/minus.png"));
     removalButton->setIconSize(QSize(8, 8));
     removalButton->setFlat(true);
     removalButton->setStatusTip("Delete the Plug from its Node");
@@ -124,9 +124,9 @@ void PlugRow::renamePlug()
 void PlugRow::updateDirectionIcon()
 {
     if (m_plug.isIncoming()) {
-        m_directionToggle->setIcon(QIcon(":/icons/incoming.svg"));
+        m_directionToggle->setIcon(QIcon(":/icons/incoming.png"));
     } else {
-        m_directionToggle->setIcon(QIcon(":/icons/outgoing.svg"));
+        m_directionToggle->setIcon(QIcon(":/icons/outgoing.png"));
     }
 }
 
