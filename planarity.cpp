@@ -41,7 +41,7 @@ static void planarity(std::vector<graph_node> &node,
         embedding_storage = embedding_storage_t(num_vertices(g));
         if(!boyer_myrvold_planarity_test(boyer_myrvold_params::graph = g, boyer_myrvold_params::embedding = &embedding_storage[0])){
             g=gt;
-            edge[i].flag = false;
+            if(edge[i].wt < 0.3)edge[i].flag = false;
         }
     }
 
