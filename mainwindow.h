@@ -5,6 +5,8 @@
 #include <QString>
 #include <QFileDialog>
 #include "graph.h"
+#include "pagerank.h"
+#include "planarity.h"
 #include "nodectrl.h"
 #include "propertyeditor.h"
 #include "relarankgraph/scene.h"
@@ -12,30 +14,6 @@
 class MainCtrl;
 class PropertyEditor;
 class QSplitter;
-
-/*class RenderThread : public QThread
-{
-    Q_OBJECT
-
-signals:
-    void notify(int);
-
-public:
-    RenderThread(std::vector<graph_node> &_node,
-                 std::vector<graph_edge> &_edge, std::vector<NodeCtrl*> &_nodectrl,
-                 MainCtrl* &_mainCtrl, QObject *parent = 0)
-        : node(_node), edge(_edge), nodectrl(_nodectrl), mainCtrl(_mainCtrl), QThread(parent)
-    {
-    }
-
-protected:
-    void run();
-private:
-    std::vector<graph_node> &node;
-    std::vector<graph_edge> &edge;
-    std::vector<NodeCtrl*> &nodectrl;
-    MainCtrl* &mainCtrl;
-};*/
 
 class MainWindow: public QMainWindow
 {
@@ -60,10 +38,12 @@ private:			// methods
 
     void writeSettings();
 
-    void printsta(MainCtrl * mainCtrl);
+    void printsta(MainCtrl * mainCtrl, Planarity * planar);
     void clearsta();
     std::vector < graph_node > node;
     std::vector < graph_edge > edge;
+    std::vector < double > pagerank;
+    std::vector < std::pair<int, int> > location;
     std::vector < NodeCtrl * >nodectrl;
     relarank::Scene * relarankScene;
     relarank::View * relarankView;
