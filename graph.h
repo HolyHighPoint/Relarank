@@ -9,26 +9,15 @@ class graph_edge
 {
 public:
     int x, y;
-    double w;
+    bool flag;
+    double w, wt;
     graph_edge(int _x = 0, int _y = 0, double _w = 0.0): x(_x), y(_y),
-        w(_w)
+        flag(true), w(_w)
     {
     }
     bool operator< (const graph_edge & b)
     {
-        if (x < b.x)
-            return true;
-        if (x > b.x)
-            return false;
-        if (y < b.y)
-            return true;
-        if (y > b.y)
-            return false;
-        if (w < b.w)
-            return true;
-        if (w > b.w)
-            return false;
-        return false;
+        return wt > b.wt;
     }
 };
 
