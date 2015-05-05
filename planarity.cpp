@@ -44,7 +44,6 @@ static void planarity(std::vector<graph_node> &node,
             if(edge[i].wt < 0.3)edge[i].flag = false;
         }
     }
-
     embedding_storage = embedding_storage_t(num_vertices(g));
     graph_traits<graph>::edge_iterator ei, ei_end;
     graph_traits<graph>::edges_size_type edge_count = 0;
