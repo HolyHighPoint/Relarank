@@ -22,28 +22,28 @@ void PageRank::run()
         if (num_iter == 0)old_pr = pr;else {
             for (size_t i = 0; i < pr.size(); i++) {
                 old_pr[i] = pr[i] / sum;
+                pr[i]=0;
             }
         }
 
-        sum = 1;
         double delta0 = alpha * noout / num;
-        double delta1 = (1 - alpha) * sum / num;
+        double delta1 = (1 - alpha) / num;
         diff = 0;
 
         for(size_t i = 0; i < edge.size(); i++){
-            pr[edge[i].y] += edge[i].w*old_pr[edge[i].x];
+            pr[edge[i].y] += edge[i].wt*old_pr[edge[i].x];
         }
         for (size_t i = 0; i < num; i++) {
             pr[i] = pr[i]*alpha + delta0 + delta1;
-            diff += fabs(pr[i] - old_pr[i]);
+            diff += fabs(pr[i] - old_pr[i]*sum);
         }
     }
     double sum = 0;
     for (size_t k = 0; k < pr.size(); k++)sum += pr[k];
     for (size_t i = 0; i < pr.size(); i++){
-        pr[i] = pr[i] / sum;
+        pr[i] = pr[i] / sum * node.size();
         qDebug()<<i<<": "<<pr[i];
     }
-    qDebug()<<sum/sum;
+    qDebug()<<node.size();
 }
 

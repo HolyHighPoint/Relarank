@@ -74,14 +74,15 @@ MainWindow::MainWindow(QWidget * parent): QMainWindow(parent)
     // create the Property Editor
     propertyEditor = new PropertyEditor(this);
     // create the Main Controller
+    ranklist = new RankList(this);
+    // create the Node List
     m_mainCtrl = new MainCtrl(this, relarankScene, propertyEditor);
     // setup the main splitter
     m_mainSplitter = new QSplitter(Qt::Horizontal, this);
     m_mainSplitter->addWidget(propertyEditor);
     m_mainSplitter->addWidget(relarankView);
-    m_mainSplitter->setSizes({
-        100, 900
-    });
+    m_mainSplitter->addWidget(ranklist);
+    m_mainSplitter->setSizes({100, 900, 200});
     // initialize the GUI
     setCentralWidget(m_mainSplitter);
 }
@@ -150,7 +151,7 @@ void MainWindow::openfile()
     Planarity *pl = new Planarity(node, edge, location, this);
     pl->start();
     clearsta();
-    printsta(m_mainCtrl, pl);
+    printsta(m_mainCtrl, pl, pr);
 }
 
 void MainWindow::clearsta()
@@ -170,80 +171,30 @@ void MainWindow::clearsta()
     relarankView = new relarank::View(this);
     relarankView->setScene(relarankScene);
     propertyEditor = new PropertyEditor(this);
+    ranklist = new RankList(this);
     m_mainCtrl = new MainCtrl(this, relarankScene, propertyEditor);
     m_mainSplitter = new QSplitter(Qt::Horizontal, this);
     m_mainSplitter->addWidget(propertyEditor);
     m_mainSplitter->addWidget(relarankView);
-    m_mainSplitter->setSizes({
-        100, 900
-    }
-                            );
+    m_mainSplitter->addWidget(ranklist);
+    m_mainSplitter->setSizes({100, 900, 200});
     setCentralWidget(m_mainSplitter);
 }
 
-void MainWindow::printsta(MainCtrl * mainCtrl, Planarity *planar)
+void MainWindow::printsta(MainCtrl * mainCtrl, Planarity *planarT, PageRank * pagerankT)
 {
     QProgressDialog progress_dialog("    Loading graph file...    ", "Cancel", 0, node.size() + edge.size(), this);
     progress_dialog.show();
     qApp->processEvents();
-    /*const double PI = 3.1415926535898;
-    const double dis = 200.;
-    const double ang = 2 * PI / node.size();
-    const double R = sqrt(dis*dis/2/(1-cos(ang)))*/
-/*
-    int *d = new int[node.size()+1], h=0, t=1;d[t]=0;
-    int *f = new int[node.size()+1];
-    vector<vector<int> >sta;sta.clear();
-    for(int i=0;i<=(int)node.size();i++)f[i]=0;
-    for(int i=0;i<(int)node.size();i++)if(!f[i]){
-        f[i]=1;
-        if(sta.empty())sta.push_back(vector<int>());
-        sta[0].push_back(i);
-        while(h != t){
-            h++;
-            for (vector < graph_edge >::const_iterator i = node[d[h]].edge.begin(); i != node[d[h]].edge.end(); i++) {
-                int y = !f[i->x]?i->x:i->y, x=(f[i->x] == y)?i->y:i->x;
-                if(!f[y]){
-                    if((int)sta.size() <= f[x])sta.push_back(vector<int>());
-                    sta[f[x]].push_back(y);
-                    f[y]=f[x]+1;
-                    d[++t]=y;
-                }
-            }
-        }
-    }
-    delete [] d;
-    delete [] f;
-    double R = dis;
-    qsrand(QTime().secsTo(QTime::currentTime()));
-    for(vector<vector<int> >::iterator i = sta.begin();i != sta.end(); i++){
-        const double ang = 2 * PI / i->size();
-        const double angtr = double(qrand()%10000)/20000.0*PI;
-        R = max(R+dis, (abs(sin(ang))>1e-3)?sqrt(dis*dis/2/sin(ang)):0);
-        for(vector<int>::iterator j = i->begin();j!= i->end();j++){
-            progress_dialog.setValue(progress_dialog.value()+1);
-            nodectrl.push_back(mainCtrl->createNode(node[*j].name));
-
-            nodectrl.back()->getNodeHandle().setPos(R *cos(ang * (j - i->begin())+angtr), R * sin(ang * (j - i->begin()))+angtr);
-            qApp->processEvents();
-            if (progress_dialog.wasCanceled()) {
-                clearsta();
-                return;
-            }
-        }
-    }
-*/
-    while(!planar->isFinished())qApp->processEvents();
+    while(!planarT->isFinished())qApp->processEvents();
     for (vector < graph_node >::const_iterator i = node.begin(); i != node.end(); i++) {
         progress_dialog.setValue(i - node.begin());
         nodectrl.push_back(mainCtrl->createNode(i->name));
         nodectrl.back()->getNodeHandle().setPos(location[i-node.begin()].first, location[i-node.begin()].second);
         qApp->processEvents();
-        /*if (progress_dialog.wasCanceled()) {
-            clearsta();
-            return;
-        }*/
     }
+    while(!pagerankT->isFinished())qApp->processEvents();
+    ranklist->changelist(node, pagerank, nodectrl);
     for (vector < graph_edge >::const_iterator i = edge.begin(); i != edge.end(); i++) {
         progress_dialog.setValue(node.size() + i - edge.begin());
         if(!i->flag)continue;
@@ -256,7 +207,6 @@ void MainWindow::printsta(MainCtrl * mainCtrl, Planarity *planar)
         x.connectPlug(y);
         qApp->processEvents();
         if (progress_dialog.wasCanceled()) {
-            //clearsta();
             return;
         }
     }

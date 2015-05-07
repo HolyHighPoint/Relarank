@@ -7,6 +7,7 @@
 #include "graph.h"
 #include "pagerank.h"
 #include "planarity.h"
+#include "ranklist.h"
 #include "nodectrl.h"
 #include "propertyeditor.h"
 #include "relarankgraph/scene.h"
@@ -38,7 +39,7 @@ private:			// methods
 
     void writeSettings();
 
-    void printsta(MainCtrl * mainCtrl, Planarity * planar);
+    void printsta(MainCtrl * mainCtrl, Planarity *planarT, PageRank * pagerankT);
     void clearsta();
     std::vector < graph_node > node;
     std::vector < graph_edge > edge;
@@ -48,6 +49,7 @@ private:			// methods
     relarank::Scene * relarankScene;
     relarank::View * relarankView;
     PropertyEditor *propertyEditor;
+    RankList * ranklist;
 
 private:			// members
 

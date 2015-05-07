@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     relarankgraph/straightedge.cpp \
     relarankgraph/view.cpp \
     pagerank.cpp \
-    planarity.cpp
+    planarity.cpp \
+    ranklist.cpp
 
 HEADERS  += mainwindow.h \
     collapsible.h \
@@ -70,7 +71,8 @@ HEADERS  += mainwindow.h \
     relarankgraph/view.h \
     graph.h \
     pagerank.h \
-    planarity.h
+    planarity.h \
+    ranklist.h
 
 RESOURCES += \
     res/icons.qrc
