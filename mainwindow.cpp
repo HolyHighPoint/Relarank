@@ -82,7 +82,7 @@ MainWindow::MainWindow(QWidget * parent): QMainWindow(parent)
     m_mainSplitter->addWidget(propertyEditor);
     m_mainSplitter->addWidget(relarankView);
     m_mainSplitter->addWidget(ranklist);
-    m_mainSplitter->setSizes({100, 900, 200});
+    m_mainSplitter->setSizes({200, 900, 200});
     // initialize the GUI
     setCentralWidget(m_mainSplitter);
 }
@@ -137,10 +137,10 @@ void MainWindow::openfile()
     for (int i = 0; i < m; i++) {
         int x, y;
         double w;
-        in >> x >> y >> w;
+        in >> y >> x >> w;
         x--, y--;
         sumn[x]+=w;
-        qDebug() << x << " " << y << " " << w;
+        qDebug() << y << " " << x << " " << w;
         edge.push_back(graph_edge(x, y, w));
         node[x].insert(x, y, w);
     }
@@ -177,7 +177,7 @@ void MainWindow::clearsta()
     m_mainSplitter->addWidget(propertyEditor);
     m_mainSplitter->addWidget(relarankView);
     m_mainSplitter->addWidget(ranklist);
-    m_mainSplitter->setSizes({100, 900, 200});
+    m_mainSplitter->setSizes({200, 900, 200});
     setCentralWidget(m_mainSplitter);
 }
 
@@ -187,24 +187,31 @@ void MainWindow::printsta(MainCtrl * mainCtrl, Planarity *planarT, PageRank * pa
     progress_dialog.show();
     qApp->processEvents();
     while(!planarT->isFinished())qApp->processEvents();
+    nodectrl.assign(node.size(), NULL);
     for (vector < graph_node >::const_iterator i = node.begin(); i != node.end(); i++) {
         progress_dialog.setValue(i - node.begin());
-        nodectrl.push_back(mainCtrl->createNode(i->name));
-        nodectrl.back()->getNodeHandle().setPos(location[i-node.begin()].first, location[i-node.begin()].second);
+        nodectrl[i-node.begin()]=mainCtrl->createNode(i->name);
+        nodectrl[i-node.begin()]->getNodeHandle().setPos(location[i-node.begin()].first, location[i-node.begin()].second);
         qApp->processEvents();
+        if (progress_dialog.wasCanceled()) {
+            break;
+        }
     }
     while(!pagerankT->isFinished())qApp->processEvents();
     ranklist->changelist(node, pagerank, nodectrl);
+    if (progress_dialog.wasCanceled()) {
+        return;
+    }
     for (vector < graph_edge >::const_iterator i = edge.begin(); i != edge.end(); i++) {
         progress_dialog.setValue(node.size() + i - edge.begin());
         if(!i->flag)continue;
         char tmpw[50];
         sprintf(tmpw, "%.2lf", i->wt);
-        relarank::PlugHandle x =
-            nodectrl[i->x]->addOutgoingPlug("Out to " + node[i->y].name + " Value = " + QString(tmpw));
         relarank::PlugHandle y =
-            nodectrl[i->y]->addIncomingPlug("In from " +node[i->x].name + " Value = " + QString(tmpw));
-        x.connectPlug(y);
+            nodectrl[i->y]->addOutgoingPlug("Out to " + node[i->x].name + " Value = " + QString(tmpw));
+        relarank::PlugHandle x =
+            nodectrl[i->x]->addIncomingPlug("In from " +node[i->y].name + " Value = " + QString(tmpw));
+        y.connectPlug(x);
         qApp->processEvents();
         if (progress_dialog.wasCanceled()) {
             return;

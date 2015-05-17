@@ -24,9 +24,9 @@ void RankList::changelist(vector<graph_node> &_node, vector<double> &_w, vector<
 }
 void RankList::NodeChange(QTreeWidgetItem * current, QTreeWidgetItem * previous){
     for(size_t i=0;i<tmp.size();i++){
-        tmp[i].np->setSelected(false);
+        if(tmp[i].np)tmp[i].np->setSelected(false);
     }
-    if(current)tmp[current->data(0x0100, 0x0100).toInt()].np->setSelected(true);
+    if(current&&tmp[current->data(0x0100, 0x0100).toInt()].np)tmp[current->data(0x0100, 0x0100).toInt()].np->setSelected(true);
 }
 
 
