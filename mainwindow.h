@@ -32,6 +32,7 @@ private slots:
 
 public slots:
     void openfile();
+    void savefile();
 
 private:			// methods
 
@@ -40,6 +41,7 @@ private:			// methods
     void writeSettings();
 
     void printsta(MainCtrl * mainCtrl, Planarity *planarT, PageRank * pagerankT);
+    void printsta(PageRank * pagerankT);
     void clearsta();
     std::vector < graph_node > node;
     std::vector < graph_edge > edge;

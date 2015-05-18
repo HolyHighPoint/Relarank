@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/icons">
-        <file>QT.png</file>
         <file>bucket.png</file>
         <file>incoming.png</file>
         <file>minus.png</file>
@@ -8,5 +7,7 @@
         <file>play.png</file>
         <file>plus.png</file>
         <file>questionmark.png</file>
+        <file>Relarank.png</file>
+        <file>zerg.png</file>
     </qresource>
 </RCC>

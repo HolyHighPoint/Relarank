@@ -11,6 +11,7 @@
 #include <QDebug>
 #include <QMenuBar>
 #include <QTime>
+#include <QTimer>
 #include <QProgressDialog>
 #include <cmath>
 #include <cstring>
@@ -45,23 +46,22 @@ MainWindow::MainWindow(QWidget * parent): QMainWindow(parent)
     mainToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     addToolBar(Qt::TopToolBarArea, mainToolBar);
     // create global actions
-    QAction *
-    newNodeAction =
-        new QAction(QIcon(":/icons/incoming.png"), tr("&Open"), this);
+    QAction *newNodeAction = new QAction(QIcon(":/icons/incoming.png"), tr("&Open"), this);
     newNodeAction->setShortcuts(QKeySequence::Open);
     newNodeAction->setStatusTip(tr("Open the file"));
     mainToolBar->addAction(newNodeAction);
     connect(newNodeAction, SIGNAL(triggered()), this, SLOT(openfile()));
-    QAction *
-    closeAction =
-        new QAction(QIcon(":/icons/outgoing.png"), tr("E&xit"), this);
+    QAction *saveAction = new QAction(QIcon(":/icons/play.png"), tr("&Save"), this);
+    saveAction->setStatusTip(tr("Save"));
+    saveAction->setShortcuts(QKeySequence::Save);
+    mainToolBar->addAction(saveAction);
+    connect(saveAction, SIGNAL(triggered()), this, SLOT(savefile()));
+    QAction *closeAction = new QAction(QIcon(":/icons/outgoing.png"), tr("E&xit"), this);
     closeAction->setStatusTip(tr("Exit"));
     closeAction->setShortcuts(QKeySequence::Close);
     mainToolBar->addAction(closeAction);
     connect(closeAction, SIGNAL(triggered()), this, SLOT(close()));
-    QAction *
-    aboutAction =
-        new QAction(QIcon(":/icons/questionmark.png"), tr("&About"), this);
+    QAction * aboutAction = new QAction(QIcon(":/icons/questionmark.png"), tr("&About"), this);
     aboutAction->setStatusTip(tr("About this application"));
     mainToolBar->addAction(aboutAction);
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(displayAbout()));
@@ -101,23 +101,24 @@ void MainWindow::closeEvent(QCloseEvent * event)
 
 void MainWindow::displayAbout()
 {
-    QMessageBox aboutBox;
-    aboutBox.setWindowTitle("About the Relarank");
-    aboutBox.setText("<h3>About this Application</h3>");
+    QMessageBox aboutBox(this);
+    aboutBox.setToolTip("About this Application");
+    aboutBox.setText("<h2>Relarank</h2>"
+                     "<p>Relarank is an application for comparing importance degrees in the relationship.</p>"
+                     "<h4>By: </h4><p>&nbsp;&nbsp;&nbsp;&nbsp;Jiguanglizipao<br>&nbsp;&nbsp;&nbsp;&nbsp;ccssqq1122233</p>"
+                     "<h4>Website: </h4><p><a href=https://github.com/holyhighpoint/relarank>https://github.com/holyhighpoint/relarank</a></p>");
+    aboutBox.setIconPixmap(QPixmap(":/icons/zerg.png"));
     aboutBox.exec();
+    //aboutBox.about(this, "About this Application", "Relarank is an application for comparing importance degree in the relationship.");
 }
 
 void MainWindow::openfile()
 {
-    QString fileName =
-        QFileDialog::getOpenFileName(this, tr("打开文件"), "",
-                                     tr("rel文件(*.rel);;所有文件(*.*)"));
-    if (fileName == "")
-        return;
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Files"), "", tr("Rel Files(*.rel);;All Files(*.*)"));
+    if (fileName == "") return;
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        QMessageBox::critical(this, tr("错误"),
-                              tr("无法打开 %1").arg(fileName));
+        QMessageBox::critical(this, tr("ERROR!"), tr("Can not open this fils. %1").arg(fileName));
         return;
     }
     int n, m;
@@ -144,21 +145,39 @@ void MainWindow::openfile()
         edge.push_back(graph_edge(x, y, w));
         node[x].insert(x, y, w);
     }
+    file.close();
     for (int i = 0; i < m; i++)edge[i].wt = edge[i].w/sumn[edge[i].x];
     sort(edge.begin(), edge.end());
+    pagerank.clear();location.clear();
     PageRank *pr = new PageRank(node, edge, pagerank, this);
     pr->start();
     Planarity *pl = new Planarity(node, edge, location, this);
-    pl->start();
+    if(node.size() <= 500)pl->start();
     clearsta();
-    printsta(m_mainCtrl, pl, pr);
+    if(node.size() <= 500)printsta(m_mainCtrl, pl, pr);else printsta(pr);
+}
+
+void MainWindow::savefile()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Files"), "", tr("CSV Files(*.csv);;All Files(*.*)"));
+    if(pagerank.empty())return;
+    qDebug()<<fileName<<endl;
+    QFile file(fileName);
+    if (!file.open(QFile::WriteOnly | QFile::Text))return;
+    QTextStream out(&file);
+    vector<pair<double, QString> > tmp;
+    for(size_t i=0;i<node.size();i++)tmp.push_back(make_pair(pagerank[i], node[i].name));
+    sort(tmp.begin(), tmp.end());
+    out<<"Rank,"<<"Name,"<<"Value"<<endl;
+    for(int i=node.size()-1;i>=0;i--)out<<node.size()-i<<",\""<<tmp[i].second<<"\","<<tmp[i].first<<endl;
+    file.close();
 }
 
 void MainWindow::clearsta()
 {
     for (vector < NodeCtrl * >::const_iterator i = nodectrl.begin();
          i != nodectrl.end(); i++) {
-        (*i)->remove();
+        if(*i != NULL)(*i)->remove();
         delete *i;
     }
     nodectrl.clear();
@@ -218,5 +237,24 @@ void MainWindow::printsta(MainCtrl * mainCtrl, Planarity *planarT, PageRank * pa
         }
     }
     progress_dialog.accept();
+    delete pagerankT;
+    delete planarT;
 }
 
+void MainWindow::printsta(PageRank * pagerankT)
+{
+    QProgressDialog progress_dialog("    Loading graph file...    ", "Cancel", 0, node.size()*node.size()*100, this);
+    progress_dialog.show();
+    qApp->processEvents();
+    while(!pagerankT->isFinished()){
+        progress_dialog.setValue(progress_dialog.value()+1);
+        qApp->processEvents();
+        if (progress_dialog.wasCanceled()) {
+            return;
+        }
+    }
+    nodectrl.assign(node.size(), NULL);
+    ranklist->changelist(node, pagerank, nodectrl);
+    progress_dialog.accept();
+    delete pagerankT;
+}

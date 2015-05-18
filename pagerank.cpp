@@ -53,12 +53,11 @@ void PageRank::run()
             diff += fabs(pr[i] - old_pr[i]*sum);
         }
     }
-
     double sum = 0;
     int mdis=0;
     for (size_t k = 0; k < pr.size(); k++){
         spfa(k);
-        for(size_t i=0;i<dis.size();i++)maxdis[k]=(dis[i]>1000000000)?maxdis[i]:max(maxdis[k], dis[i]);
+        for(size_t i=0;i<dis.size();i++)maxdis[k]=(dis[i]==1000000000)?maxdis[i]:max(maxdis[k], dis[i]);
         mdis=max(mdis, maxdis[k]);
         qDebug()<<k<<": "<<maxdis[k];
     }
