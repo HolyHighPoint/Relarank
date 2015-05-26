@@ -29,7 +29,8 @@ private:
         double w;
         QString name;
         NodeCtrl * np;
-        bool operator < (const TmpNode &a){
+        bool operator < (const TmpNode &a) const
+        {
             return w > a.w;
         }
     };

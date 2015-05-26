@@ -13,10 +13,10 @@ void RankList::changelist(vector<graph_node> &_node, vector<double> &_w, vector<
     sort(tmp.begin(), tmp.end());
     for(size_t i=0;i<tmp.size();i++){
         QStringList t;
-        QVariant rank(i+1), value(tmp[i].w);
+        QVariant rank(int(i)+1), value(tmp[i].w);
         t<<rank.toString()<<tmp[i].name<<value.toString();
         QTreeWidgetItem *ln = new QTreeWidgetItem(this, t);
-        ln->setData(0x0100, 0x0100, i);
+        ln->setData(0x0100, 0x0100,int(i));
         this->addTopLevelItem(ln);
     }
     this->header()->resizeSections(QHeaderView::ResizeToContents);

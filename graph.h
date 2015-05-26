@@ -15,7 +15,7 @@ public:
         flag(true), w(_w)
     {
     }
-    bool operator< (const graph_edge & b)
+    bool operator< (const graph_edge & b) const
     {
         return wt > b.wt;
     }
