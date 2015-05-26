@@ -3,6 +3,7 @@
 #include "edgearrow.h"
 #include "node.h"
 #include "plug.h"
+#include <cmath>
 
 namespace relarank
 {
