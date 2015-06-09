@@ -29,6 +29,7 @@ public:		// methods
 
 public:			// static methods
 
+
     static inline QColor getTextColor()
     {
         return s_textColor;
@@ -156,7 +157,11 @@ private:			// static members
 
     static QColor s_textColor;
 
+    static QColor s_SelectedtextColor;
+
     static QColor s_backgroundColor;
+
+    static QColor s_SelectedbackgroundColor;
 
     static QColor s_lineColor;
 

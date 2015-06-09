@@ -10,14 +10,16 @@
 namespace relarank
 {
 
-QColor NodeLabel::s_textColor = QColor("#ffffff");
-QColor NodeLabel::s_backgroundColor = QColor("#426998");
+QColor NodeLabel::s_textColor = QColor("#000000");
+QColor NodeLabel::s_SelectedtextColor = QColor("#ffffff");
+QColor NodeLabel::s_SelectedbackgroundColor = QColor("#426998");
+QColor NodeLabel::s_backgroundColor = QColor("#FFFFFF");
 QColor NodeLabel::s_lineColor = QColor("#cdcdcd");
 qreal NodeLabel::s_outlineWidth = 1.5;
-uint NodeLabel::s_roundEdgeRadius = 8;
-qreal NodeLabel::s_verticalMargin = 2.;
-qreal NodeLabel::s_horizontalMargin = 4.;
-QFont NodeLabel::s_font = QFont("DejaVu Sans Mono", 9, QFont::DemiBold);
+uint NodeLabel::s_roundEdgeRadius = 15;
+qreal NodeLabel::s_verticalMargin = 4.;
+qreal NodeLabel::s_horizontalMargin = 8.;
+QFont NodeLabel::s_font = QFont("DejaVu Sans Mono", 30, QFont::DemiBold);
 QPen NodeLabel::s_linePen = QPen(QBrush(s_lineColor), s_outlineWidth);
 
 NodeLabel::NodeLabel(Node * parent): QGraphicsObject(parent)
@@ -78,12 +80,20 @@ void NodeLabel::paint(QPainter * painter,
     painter->setClipRect(option->exposedRect);
     // draw the background
     painter->setPen(s_linePen);
-    painter->setBrush(s_backgroundColor);
+    if (parentItem()->isSelected()) {
+        painter->setBrush(s_SelectedbackgroundColor);
+    } else {
+        painter->setBrush(s_backgroundColor);
+    }
     painter->drawRoundedRect(m_outlineRect, s_roundEdgeRadius,
                              s_roundEdgeRadius, Qt::AbsoluteSize);
     // draw the text
     painter->setFont(s_font);
-    painter->setPen(s_textColor);
+    if (parentItem()->isSelected()) {
+        painter->setPen(s_SelectedtextColor);
+    } else {
+        painter->setPen(s_textColor);
+    }
     painter->drawStaticText(m_textPos, m_text);
 }
 

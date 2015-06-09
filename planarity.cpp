@@ -83,7 +83,7 @@ static void planarity(std::vector<graph_node> &node,
     pair<int, int> mi, ma, mid;
     for(tie(vi,vi_end) = vertices(g); vi != vi_end; vi++){
         coord_t coord(get(straight_line_drawing,*vi));
-        location.push_back(make_pair(coord.x*60, coord.y*60));
+        location.push_back(make_pair(coord.x*45, coord.y*60));
         mi.first = min(location.back().first, mi.first), mi.second = min(location.back().second, mi.second);
         ma.first = max(location.back().first, ma.first), ma.second = max(location.back().second, ma.second);
     }

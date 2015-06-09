@@ -35,9 +35,9 @@ static qreal angularDistance(qreal alpha, qreal beta);
 namespace relarank
 {
 
-qreal Node::s_coreRadius = 25.;
+qreal Node::s_coreRadius = 20.;
 QColor Node::s_idleColor = QColor("#4b77a7");
-QColor Node::s_selectedColor = QColor("#62abfa");
+QColor Node::s_selectedColor = QColor("#aa5566");
 QColor Node::s_outlineColor = QColor("#cdcdcd");
 qreal Node::s_outlineWidth = 3.;
 QString Node::s_plugSuffix = "_";
@@ -292,6 +292,7 @@ void Node::paint(QPainter * painter,
     // draw core
     painter->setPen(s_linePen);
     painter->drawEllipse(quadrat(s_coreRadius));
+    m_label->update();
 }
 
 QPainterPath Node::shape() const
